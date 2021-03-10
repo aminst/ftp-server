@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 
 #define MAX_CONNECTIONS 10
@@ -13,7 +14,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    struct sockaddr_in server_in;
+    struct sockaddr_in server_sin;
 
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1)
@@ -21,11 +22,11 @@ int main(int argc, char const *argv[])
         cout << "Socket Creation Error!" << endl; //
         return EXIT_FAILURE;
     }
-    server_in.sin_port = htons(5000);
-    server_in.sin_addr.s_addr = INADDR_ANY;
-    server_in.sin_family = AF_INET;
+    server_sin.sin_port = htons(5000);
+    server_sin.sin_addr.s_addr = inet_addr("127.0.0.1");;
+    server_sin.sin_family = AF_INET;
 
-    if (bind(server_fd, (struct sockaddr*)& server_in, sizeof(server_in)) == -1)
+    if (bind(server_fd, (struct sockaddr*)& server_sin, sizeof(server_sin)) == -1)
     {
         cout << "Bind Error!" << endl;
         return EXIT_FAILURE;
@@ -37,9 +38,9 @@ int main(int argc, char const *argv[])
         return EXIT_FAILURE;
     }
 
-    struct sockaddr_in client_in;
+    struct sockaddr_in client_sin;
     int client_in_len;
-    int new_server_fd = accept(server_fd, (struct sockaddr*)& client_in, (socklen_t*)&client_in_len);
+    int new_server_fd = accept(server_fd, (struct sockaddr*)& client_sin, (socklen_t*)&client_in_len);
     if (new_server_fd == -1)
     {
         cout << "Accept Error!" << endl;
@@ -48,8 +49,8 @@ int main(int argc, char const *argv[])
     char buf[MAX_BUFFER_SIZE];
     while (true)
     {
-        client_in_len = recv(new_server_fd, buf, sizeof(buf), 0);
-        cout << buf << endl;
+        if ((client_in_len = recv(new_server_fd, buf, sizeof(buf), 0)))
+            cout << buf << endl;
     }
     
     close(server_fd);
