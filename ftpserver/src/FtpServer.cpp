@@ -40,7 +40,7 @@ void FtpServer::run()
     while (true)
     {
         if ((client_in_len = recv(new_server_fd, buf, sizeof(buf), 0)))
-            cout << buf << endl;
+            command_handler.run_command(string(buf));
     }
     
     close(server_fd);

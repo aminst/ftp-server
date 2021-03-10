@@ -9,6 +9,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "CommandHandler.hpp"
+
 #define MAX_CONNECTIONS 10
 #define MAX_BUFFER_SIZE 1024
 
@@ -16,6 +18,9 @@ class FtpServer
 {
 public:
     void run();
+
+private:
+    CommandHandler command_handler;
 };
 
 #endif
