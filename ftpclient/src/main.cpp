@@ -5,7 +5,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     FtpClient ftp_client = FtpClient();
-    ftp_client.start();
-    
+    ftp_client.run();
+
     return 0;
 }

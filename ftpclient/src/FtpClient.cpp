@@ -2,12 +2,12 @@
 
 using namespace std;
 
-void FtpClient::start()
+void FtpClient::run()
 {
     int client_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (client_fd == -1)
     {
-        cout << "Socket Creation Error!" << endl; //
+        cout << "Socket Creation Error!" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -22,7 +22,13 @@ void FtpClient::start()
         exit(EXIT_FAILURE);
     }
 
-    char buf[MAX_BUFFER_SIZE] = "salammmmmmmmmmmmmmmmmm ^_^";
-    send(client_fd, buf, sizeof(buf), 0);
+    char buf[MAX_BUFFER_SIZE];
+    string command;
+    while(getline(cin, command))
+    {
+        strcpy(buf, command.c_str());
+        send(client_fd, buf, sizeof(buf), 0);
+    }
 
+    close(client_fd); // does this run after Ctrl+C??? NOOOOOO
 }
