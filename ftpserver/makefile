@@ -2,7 +2,7 @@ CC = g++
 BUILD_DIR = build
 SRC_DIR = src
 INCLUDE_DIR = includes
-CFLAGS = -std=c++11 -Wall -Werror -I$(INCLUDE_DIR)
+CFLAGS = -std=c++11 -pthread -Wall -Werror -I$(INCLUDE_DIR)
 
 EXECUTABLE_FILE = ftpserver.out
 
