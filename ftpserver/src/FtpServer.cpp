@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void FtpServer::start()
+void FtpServer::run()
 {
     struct sockaddr_in server_sin;
 

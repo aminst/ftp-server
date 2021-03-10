@@ -15,7 +15,7 @@
 class FtpServer
 {
 public:
-    void start();
+    void run();
 };
 
 #endif
