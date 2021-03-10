@@ -10,7 +10,7 @@ OBJECTS = \
 	$(BUILD_DIR)/Main.o \
 	$(BUILD_DIR)/FtpServer.o
 
-FtpServerSensitivityList = \
+FtpServerSensitivityList = $(SRC_DIR)/FtpServer.cpp \
 
 MainSensitivityList = \
 	$(SRC_DIR)/main.cpp \
