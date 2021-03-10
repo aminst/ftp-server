@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1)
     {
-        cout << "Socket Creation Error!" << endl; //
+        cout << "Socket Creation Error!" << endl;
         return EXIT_FAILURE;
     }
     server_sin.sin_port = htons(5000);

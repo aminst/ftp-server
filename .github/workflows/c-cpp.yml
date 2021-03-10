@@ -15,3 +15,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: make_ftpserver
       run: make ftpserver/
+    - name: make_ftpclient
+      run: make ftpclient/
