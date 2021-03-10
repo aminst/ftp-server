@@ -2,6 +2,12 @@
 
 using namespace std;
 
+FtpServer::FtpServer(const string& config_file_path) :
+    user_manager(ConfigParser(config_file_path).get_users()),
+    protected_files(ConfigParser(config_file_path).get_protected_files())
+{
+}
+
 void* FtpServer::handle_connection(void* _fd)
 {
     int fd = *(int*) _fd;
