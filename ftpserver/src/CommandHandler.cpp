@@ -6,6 +6,7 @@ void CommandHandler::run_command(string input)
 {
     Request request = CommandParser::parse_request(input);
     string command = request.get_command();
+    cout << command << endl;
     if (command == "user")
         ;
     else if (command == "pass")
@@ -30,5 +31,4 @@ void CommandHandler::run_command(string input)
         ;
     else
         ;
-
 }

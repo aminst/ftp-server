@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -18,6 +20,7 @@ class FtpServer
 {
 public:
     void run();
+    void* handle_connection();
 
 private:
     CommandHandler command_handler;
