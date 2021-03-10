@@ -20,7 +20,7 @@ class FtpServer
 {
 public:
     void run();
-    void* handle_connection();
+    void* handle_connection(void* fd);
 
 private:
     CommandHandler command_handler;
