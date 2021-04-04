@@ -7,14 +7,14 @@
 
 #include "User.hpp"
 #include "ConfigParser.hpp"
-#include "Exceptions.hpp"
+#include "Exception.hpp"
 
 class UserManager
 {
 public:
     //UserManager(std::vector<User*> users);
     //std::vector<User*> get_users();
-    static User* user_finder(std::string user_name);
+    static User* find_user(std::string user_name);
     static std::vector<User*> users;
 };
 

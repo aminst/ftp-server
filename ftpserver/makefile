@@ -14,13 +14,14 @@ OBJECTS = \
 	$(BUILD_DIR)/Request.o \
 	$(BUILD_DIR)/ConfigParser.o \
 	$(BUILD_DIR)/User.o \
-	$(BUILD_DIR)/UserManager.o\
-	$(BUILD_DIR)/Exceptions.o
+	$(BUILD_DIR)/UserManager.o \
+	$(BUILD_DIR)/Exception.o \
+	$(BUILD_DIR)/Response.o 
 
 
 UserManagerSensitivityList = $(SRC_DIR)/UserManager.cpp \
 	$(INCLUDE_DIR)/User.hpp \
-	$(INCLUDE_DIR)/Exceptions.hpp
+	$(INCLUDE_DIR)/Exception.hpp
 
 UserSensitivityList = $(SRC_DIR)/User.cpp
 
@@ -34,18 +35,20 @@ CommandParserSensitivityList = $(SRC_DIR)/CommandParser.cpp \
 CommandHandlerSensitivityList = $(SRC_DIR)/CommandHandler.cpp \
 	$(INCLUDE_DIR)/CommandParser.hpp \
 	$(INCLUDE_DIR)/Request.hpp \
-	$(INCLUDE_DIR)/Exceptions.hpp
+	$(INCLUDE_DIR)/Exception.hpp \
+	$(INCLUDE_DIR)/Response.hpp 
 
 RequestSensitivityList = $(SRC_DIR)/Request.cpp
 
-ExceptionsSensitivityList = $(SRC_DIR)/Exceptions.cpp \
-	$(INCLUDE_DIR)/Exceptions.hpp
+ResponseSensitivityList = $(SRC_DIR)/Response.cpp
+
+ExceptionSensitivityList = $(SRC_DIR)/Exception.cpp 
 
 FtpServerSensitivityList = $(SRC_DIR)/FtpServer.cpp \
 	$(INCLUDE_DIR)/CommandHandler.hpp \
 	$(INCLUDE_DIR)/UserManager.hpp \
 	$(INCLUDE_DIR)/ConfigParser.hpp \
-	$(INCLUDE_DIR)/Exceptions.hpp
+	$(INCLUDE_DIR)/Exception.hpp
 
 MainSensitivityList = \
 	$(SRC_DIR)/main.cpp \
@@ -80,8 +83,11 @@ $(BUILD_DIR)/User.o: $(UserSensitivityList)
 $(BUILD_DIR)/UserManager.o: $(UserManagerSensitivityList)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/UserManager.cpp -o $(BUILD_DIR)/UserManager.o
 
-$(BUILD_DIR)/Exceptions.o: $(ExceptionsSensitivityList)
-	$(CC) $(CFLAGS) -c $(SRC_DIR)/Exceptions.cpp -o $(BUILD_DIR)/Exceptions.o
+$(BUILD_DIR)/Exception.o: $(ExceptionSensitivityList)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/Exception.cpp -o $(BUILD_DIR)/Exception.o
+
+$(BUILD_DIR)/Response.o: $(ResponseSensitivityList)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/Response.cpp -o $(BUILD_DIR)/Response.o
 
 $(EXECUTABLE_FILE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE_FILE)

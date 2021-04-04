@@ -9,7 +9,7 @@ using namespace std;
 // }
 std::vector<User*> UserManager::users;
 
-User* UserManager::user_finder(std::string username)
+User* UserManager::find_user(std::string username)
 {
     for(User* user : UserManager::users)
     {

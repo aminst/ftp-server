@@ -17,24 +17,20 @@ void* FtpServer::handle_connection(void* _fd)
     int fd = *(int*) _fd;
     CommandHandler* command_handler = new CommandHandler();
 
-    char buf[MAX_BUFFER_SIZE];
+    char read_buf[MAX_BUFFER_SIZE];
+    string send_buf;
     int client_in_len;
     while (true)
     {
-        cout << strerror(errno) << endl;
-        if ((client_in_len = recv(fd, buf, sizeof(buf), 0)))
+        bzero(read_buf,MAX_BUFFER_SIZE);
+        if ((client_in_len = recv(fd, read_buf, sizeof(read_buf), 0)))
         {
-            cout << buf << " from fd: " << fd << endl;
-            try
-            {
-                command_handler->run_command(string(buf));
-            }
-            catch(Exceptions& e)
-            {
-                e.print_error();
-            }
+                send_buf = command_handler->run_command(string(read_buf));
         }
-        
+        if ((client_in_len = send(fd, send_buf.c_str(), sizeof(read_buf), 0)))
+        {
+        }
+
     }
     return NULL;
 }
@@ -69,12 +65,12 @@ void FtpServer::run()
 
     if (listen(server_fd, MAX_CONNECTIONS) == -1)
     {
-        cout << "Listen Error!" << endl;
+        cout << "vectoren Error!" << endl;
         exit(EXIT_FAILURE);
     }
 
     struct sockaddr_in client_sin;
-    int client_in_len;
+    int client_in_len = sizeof(client_sin);
     int thread_number = 0;
     vector<thread> new_threads;
     while (true)
@@ -83,13 +79,15 @@ void FtpServer::run()
         if (new_server_fd == -1)
         {
             cout << "Accept Error!" << endl;
+            cout << strerror(errno) << endl;
         }   
         
         thread new_thread(&FtpServer::handle_connection, this, (void*)&new_server_fd);
         new_threads.push_back(move(new_thread));
         thread_number++;
+        cout << "rrrrrrrr" << endl;
     }
-
+    cout << "ccccccccccccc" << endl;
     for (thread& thread : new_threads)
     {
         if (thread.joinable())

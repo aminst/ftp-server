@@ -15,6 +15,7 @@
 #include "CommandHandler.hpp"
 #include "ConfigParser.hpp"
 #include "User.hpp"
+#include "Response.hpp"
 
 #define MAX_CONNECTIONS 10
 #define MAX_BUFFER_SIZE 1024
@@ -27,8 +28,6 @@ public:
     void* handle_connection(void* fd);
 
 private:
-    //CommandHandler command_handler;
-    //UserManager user_manager;
     std::vector<std::string> protected_files;
 };
 
