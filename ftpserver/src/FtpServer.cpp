@@ -1,23 +1,40 @@
 #include "FtpServer.hpp"
 
+#include<errno.h>
+
 using namespace std;
 
+extern int errno;
+
 FtpServer::FtpServer(const string& config_file_path) :
-    user_manager(ConfigParser(config_file_path).get_users()),
     protected_files(ConfigParser(config_file_path).get_protected_files())
 {
+
 }
 
 void* FtpServer::handle_connection(void* _fd)
 {
     int fd = *(int*) _fd;
+    CommandHandler* command_handler = new CommandHandler();
 
     char buf[MAX_BUFFER_SIZE];
     int client_in_len;
     while (true)
     {
+        cout << strerror(errno) << endl;
         if ((client_in_len = recv(fd, buf, sizeof(buf), 0)))
-            command_handler.run_command(string(buf));
+        {
+            cout << buf << " from fd: " << fd << endl;
+            try
+            {
+                command_handler->run_command(string(buf));
+            }
+            catch(Exceptions& e)
+            {
+                e.print_error();
+            }
+        }
+        
     }
     return NULL;
 }
@@ -36,8 +53,8 @@ void FtpServer::run()
     server_sin.sin_addr.s_addr = inet_addr("127.0.0.1");;
     server_sin.sin_family = AF_INET;
 
-    const int true_flag = 1;
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &true_flag, sizeof(int)) < 0)
+    int true_flag = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, (char*)&true_flag, sizeof(int)) == -1)
     {
         cout << "Set Option Error!" << endl;
         exit(EXIT_FAILURE);
@@ -46,6 +63,7 @@ void FtpServer::run()
     if (bind(server_fd, (struct sockaddr*)& server_sin, sizeof(server_sin)) == -1)
     {
         cout << "Bind Error!" << endl;
+        cout << strerror(errno) << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -66,6 +84,7 @@ void FtpServer::run()
         {
             cout << "Accept Error!" << endl;
         }   
+        
         thread new_thread(&FtpServer::handle_connection, this, (void*)&new_server_fd);
         new_threads.push_back(move(new_thread));
         thread_number++;
