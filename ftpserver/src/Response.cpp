@@ -24,7 +24,7 @@ std::string Response::get_message(int num)
     else if (num == SUC_QUIT)
         return _221;
     else if (num == NEED_ACC)
-        return _322;
+        return _332;
     else if (num == CANT_CONNECTION)
         return _425;
     else if (num == FILE_UNAVAILABLE)
