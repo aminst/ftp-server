@@ -28,6 +28,8 @@ void FtpClient::run()
     {
         strcpy(buf, command.c_str());
         send(client_fd, buf, sizeof(buf), 0);
+        recv(client_fd, buf, sizeof(buf), 0);
+        cout << buf << endl;
     }
 
     close(client_fd); // does this run after Ctrl+C??? NOOOOOO
