@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-
 #include "User.hpp"
 #include "Json.hpp"
 

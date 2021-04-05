@@ -12,8 +12,6 @@
 class UserManager
 {
 public:
-    //UserManager(std::vector<User*> users);
-    //std::vector<User*> get_users();
     static User* find_user(std::string user_name);
     static std::vector<User*> users;
 };

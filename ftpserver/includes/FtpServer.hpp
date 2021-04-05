@@ -23,12 +23,11 @@
 class FtpServer
 {
 public:
-    FtpServer(const std::string& config_file_path);
+    FtpServer();
     void run();
     void* handle_connection(void* fd);
 
-private:
-    std::vector<std::string> protected_files;
+    static std::vector<std::string> protected_files;
 };
 
 #endif

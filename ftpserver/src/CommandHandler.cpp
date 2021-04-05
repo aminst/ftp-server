@@ -48,16 +48,16 @@ string CommandHandler::run_command(string input)
                 throw NeedAccountForLogin();
             return response.get_message(LIST_TRANSFER, ls_handler(command, arguments));
         }
-        // else if (command == "cwd")
-        //     return;
-        // else if (command == "rename")
-        //     return ;
-        // else if (command == "retr")
-        //     return;
-        // else if (command == "help")
-        //     return;
-        // else if (command == "quit")
-        //     return;
+        else if (command == "cwd")
+            ;
+        else if (command == "rename")
+            ;
+        else if (command == "retr")
+            ;
+        else if (command == "help")
+            ;
+        else if (command == "quit")
+            ;
         else
             throw SyntaxErrorInParametersOrArguments();
     }
@@ -65,7 +65,7 @@ string CommandHandler::run_command(string input)
     {
         return response.get_message(e.get_num());
     }
-    return "uuuuuuuuuuuu";
+    return response.get_message(ERROR);
 }
 
 
@@ -126,7 +126,7 @@ string CommandHandler::dele_handler(const std::string command, const std::vector
 {
     
     vector<string> temp;
-    for(int i = 1; i < arguments.size(); i++)
+    for(size_t i = 1; i < arguments.size(); i++)
     {
         temp.push_back(arguments[i]);
     }
@@ -142,11 +142,8 @@ string CommandHandler::dele_handler(const std::string command, const std::vector
         throw SyntaxErrorInParametersOrArguments();
 }
 
-/*  
-    This method is copied from:
-
-           https://stackoverflow.com/a/20617844
-*/
+  
+/// https://stackoverflow.com/a/20617844
 string CommandHandler::shell_command_runner(const std::string command, const std::vector<std::string> arguments)
 {
     char tmpname [L_tmpnam];

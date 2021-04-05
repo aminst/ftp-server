@@ -21,7 +21,6 @@
 #define ERROR 500
 #define CANT_CONNECTION 425
 
-
 class Response
 {
 public:

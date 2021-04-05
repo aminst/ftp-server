@@ -6,10 +6,10 @@ using namespace std;
 
 extern int errno;
 
-FtpServer::FtpServer(const string& config_file_path) :
-    protected_files(ConfigParser(config_file_path).get_protected_files())
-{
+vector<string> FtpServer::protected_files;
 
+FtpServer::FtpServer()
+{
 }
 
 void* FtpServer::handle_connection(void* _fd)
@@ -27,8 +27,9 @@ void* FtpServer::handle_connection(void* _fd)
         {
                 send_buf = command_handler->run_command(string(read_buf));
         }
-        if ((client_in_len = send(fd, send_buf.c_str(), sizeof(read_buf), 0)))
+        if ((client_in_len = send(fd, send_buf.c_str(), sizeof(read_buf), 0)) == -1)
         {
+            cout << "Send Command Result Error!" << endl;
         }
 
     }
@@ -85,9 +86,7 @@ void FtpServer::run()
         thread new_thread(&FtpServer::handle_connection, this, (void*)&new_server_fd);
         new_threads.push_back(move(new_thread));
         thread_number++;
-        cout << "rrrrrrrr" << endl;
     }
-    cout << "ccccccccccccc" << endl;
     for (thread& thread : new_threads)
     {
         if (thread.joinable())
