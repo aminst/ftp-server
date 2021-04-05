@@ -65,3 +65,13 @@ int FileUnavailable::get_num()
 {
     return num;
 }
+
+void MaxFileSizeExceeded::print_error()
+{
+    cout << msg << endl;
+}
+
+int MaxFileSizeExceeded::get_num()
+{
+    return num;
+}

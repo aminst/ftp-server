@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include <thread>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,6 +17,7 @@ class FtpClient
 {
 public:
     void run();
+    void* get_file(void* _client_data_fd);
 };
 
 #endif
