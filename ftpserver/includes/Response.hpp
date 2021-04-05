@@ -12,7 +12,7 @@
 #define MKD_DIRECTORY 258
 #define DELETE 250
 #define LIST_TRANSFER 226
-#define SUC_CHABGE 251
+#define SUC_CHANGE 251
 #define SUC_DOWNLOAD 252
 #define HELP 214
 #define SUC_QUIT 221

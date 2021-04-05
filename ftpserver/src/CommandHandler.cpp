@@ -2,6 +2,17 @@
 
 using namespace std;
 
+
+CommandHandler::CommandHandler()
+{
+    user = NULL;
+    found_user = NULL;
+    is_user_ready = false;
+    is_loggedin = false;
+    vector<string> temp;
+    directory = shell_command_runner("pwd", temp);
+}
+
 string CommandHandler::run_command(string input)
 {
     Request request = CommandParser::parse_request(input);
@@ -46,18 +57,37 @@ string CommandHandler::run_command(string input)
         {
             if(!is_loggedin)
                 throw NeedAccountForLogin();
-            return response.get_message(LIST_TRANSFER, ls_handler(command, arguments));
+            return response.get_message(LIST_TRANSFER, ls_handler());
         }
+
         else if (command == "cwd")
-            ;
+        {
+            if(!is_loggedin)
+                throw NeedAccountForLogin();
+            return response.get_message(cwd_handler(command, arguments));
+        }
+
         else if (command == "rename")
-            ;
+        {
+            if(!is_loggedin)
+                throw NeedAccountForLogin();
+            return response.get_message(rename_handler(command, arguments));
+        }
+
         else if (command == "retr")
             ;
+
         else if (command == "help")
-            ;
+        {
+            return response.get_message(help_handler());
+        }
+
         else if (command == "quit")
-            ;
+        {
+            if(!is_loggedin)
+                throw NeedAccountForLogin();
+            return response.get_message(quit_handler());
+        }
         else
             throw SyntaxErrorInParametersOrArguments();
     }
@@ -71,6 +101,8 @@ string CommandHandler::run_command(string input)
 
 int CommandHandler::user_handler(std::string username)
 {
+    if(is_loggedin)
+        throw Exception();
     found_user = UserManager::find_user(username);
     is_user_ready = true;
     return USERNAME_OKAY;
@@ -106,40 +138,98 @@ bool CommandHandler::pass_checker(std::string found_user_pass, std::string pass)
     }
 }
 
-string CommandHandler::pwd_handler(const std::string command, const std::vector<std::string> arguments)
+string CommandHandler::pwd_handler(const std::string command, std::vector<std::string> arguments)
 {
-    return shell_command_runner(command, arguments);
+    return directory;
 }
 
-string CommandHandler::mkd_handler(const std::string command, const std::vector<std::string> arguments)
+string CommandHandler::mkd_handler(const std::string command, std::vector<std::string> arguments)
 {
+    arguments[0] = directory + "/" + arguments[0];
     shell_command_runner("mkdir", arguments);
     return arguments[0];
 }
 
-string CommandHandler::ls_handler(const std::string command, const std::vector<std::string> arguments)
+string CommandHandler::ls_handler()
 {
-    return shell_command_runner(command, arguments);
+    vector<string> arg;
+    arg.push_back(directory);
+    for(auto str :arg)
+    {
+        cout << str<< endl;
+    }
+    return shell_command_runner("ls", arg);
 }
 
-string CommandHandler::dele_handler(const std::string command, const std::vector<std::string> arguments)
+string CommandHandler::dele_handler(const std::string command, std::vector<std::string> arguments)
 {
-    
+    if (is_protected(arguments[1]))
+        if(!user->get_is_admin())
+            throw FileUnavailable();
+    arguments[1] = directory + "/" + arguments[1];
     vector<string> temp;
     for(size_t i = 1; i < arguments.size(); i++)
-    {
         temp.push_back(arguments[i]);
-    }
     if (arguments[0] == "-f")
     {
-        return shell_command_runner(command, temp) ;
+        shell_command_runner("rm", temp);
+        return arguments[1];
     }
     else if (arguments[0] == "-d")
     {
-        return shell_command_runner(command, temp);
+        shell_command_runner("rmdir", temp);
+        return arguments[1];
     }
     else
         throw SyntaxErrorInParametersOrArguments();
+}
+
+int CommandHandler::cwd_handler(const std::string command, std::vector<std::string> arguments)
+{
+    vector<string> temp;
+    temp.push_back(directory);
+    temp.push_back("&& cd");
+    temp.push_back(arguments[0]);
+    temp.push_back(" && pwd");
+    directory = shell_command_runner("cd", temp);
+    return SUC_CHANGE;
+}
+
+int CommandHandler::rename_handler(const std::string command, std::vector<std::string> arguments)
+{
+    if (is_protected(arguments[0]))
+        if(!user->get_is_admin())
+            throw FileUnavailable();
+    arguments[0] = directory + "/" + arguments[0];
+    arguments[1] = directory + "/" + arguments[1];
+    shell_command_runner("mv", arguments);
+    return SUC_CHANGE;
+}
+
+int CommandHandler::quit_handler()
+{
+    user = NULL;
+    is_user_ready = false;
+    is_loggedin = false;
+    return SUC_QUIT;
+}
+
+int CommandHandler::help_handler()
+{
+    return HELP;
+}
+
+bool CommandHandler::is_protected(const std::string file)
+{
+    for(string _file : FtpServer::protected_files)
+    {
+        cout << file << _file << endl;
+        if (file == _file)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
   
@@ -156,7 +246,7 @@ string CommandHandler::shell_command_runner(const std::string command, const std
     cmd = cmd + ">> " + tmpname;
     cout << cmd << endl;
     if (std::system(cmd.c_str()) != 0)
-        throw Exception(); 
+        throw Exception();
     std::ifstream file(tmpname, std::ios::in | std::ios::binary );
     std::string result;
     if (file) {
@@ -165,5 +255,7 @@ string CommandHandler::shell_command_runner(const std::string command, const std
         file.close();
     }
     remove(tmpname);
+    result.pop_back();
+    result.pop_back();
     return result;
 }

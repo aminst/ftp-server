@@ -31,7 +31,6 @@ void* FtpServer::handle_connection(void* _fd)
         {
             cout << "Send Command Result Error!" << endl;
         }
-
     }
     return NULL;
 }
@@ -66,7 +65,7 @@ void FtpServer::run()
 
     if (listen(server_fd, MAX_CONNECTIONS) == -1)
     {
-        cout << "vectoren Error!" << endl;
+        cout << "listen Error!" << endl;
         exit(EXIT_FAILURE);
     }
 
