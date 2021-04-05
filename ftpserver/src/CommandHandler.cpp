@@ -169,9 +169,7 @@ string CommandHandler::dele_handler(const std::string command, std::vector<std::
     arguments[1] = directory + "/" + arguments[1];
     vector<string> temp;
     for(size_t i = 1; i < arguments.size(); i++)
-    {
         temp.push_back(arguments[i]);
-    }
     if (arguments[0] == "-f")
     {
         shell_command_runner("rm", temp);
