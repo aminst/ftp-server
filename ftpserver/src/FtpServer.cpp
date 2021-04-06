@@ -1,7 +1,5 @@
 #include "FtpServer.hpp"
 
-#include<errno.h>
-
 using namespace std;
 
 
