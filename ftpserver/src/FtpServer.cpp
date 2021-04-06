@@ -4,7 +4,6 @@
 
 using namespace std;
 
-extern int errno;
 
 vector<string> FtpServer::protected_files;
 
@@ -24,10 +23,12 @@ void* FtpServer::handle_connection(void* _command_fd, void* _data_fd)
     while (true)
     {
         bzero(read_buf,MAX_BUFFER_SIZE);
-        if ((client_in_len = recv(command_fd, read_buf, sizeof(read_buf), 0)))
-        {
+        if (recv(command_fd, read_buf, sizeof(read_buf), 0) > 0)
+        {   
             send_buf = command_handler->run_command(string(read_buf));
         }
+        else
+            return nullptr;
         if ((client_in_len = send(command_fd, send_buf.c_str(), sizeof(read_buf), 0)) == -1)
         {
             cout << "Send Command Result Error!" << endl;
@@ -60,7 +61,6 @@ int FtpServer::run_socket(int port)
     if (bind(server_fd, (struct sockaddr*)& server_sin, sizeof(server_sin)) == -1)
     {
         cout << "Bind Error!" << endl;
-        cout << strerror(errno) << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -89,7 +89,6 @@ void FtpServer::run()
         if (new_command_fd == -1 || new_data_fd == -1)
         {
             cout << "Accept Error!" << endl;
-            cout << strerror(errno) << endl;
         }
         
         thread new_thread(&FtpServer::handle_connection, this, (void*)&new_command_fd, (void*)&new_data_fd);
