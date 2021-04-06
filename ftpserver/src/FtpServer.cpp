@@ -1,7 +1,5 @@
 #include "FtpServer.hpp"
 
-#include<errno.h>
-
 using namespace std;
 
 
@@ -74,7 +72,6 @@ int FtpServer::run_socket(int port)
 
 void FtpServer::run()
 {
-    // TODO: read from config or blah blah blah
     int command_fd = run_socket(5000);
     int data_fd = run_socket(5001);
 
@@ -100,7 +97,5 @@ void FtpServer::run()
         if (thread.joinable())
             thread.join();
     }
-    // close(server_fd);
-    // close(new_server_fd);
 }
 
