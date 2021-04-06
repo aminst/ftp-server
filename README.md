@@ -6,7 +6,7 @@ For compilation use the following command in ftpclient/ and ftpserver/ directori
 ```bash
 make
 ```
-* Note: Ensure you have gcc on your computer
+* Note: Ensure you have g++ on your computer
 ### How To Run
 #### Server
 ```bash
