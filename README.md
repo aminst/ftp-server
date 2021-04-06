@@ -27,7 +27,7 @@ make
 | dele -d "dirpath"   | dele -d tempd    | delete directory with provided name     |
 | ls                  | ls               | get files and directories in pwd        |
 | cwd "new path"      | cwd new_path     | change path to new_path                 |
-| rename "from" "to"  | rename old new   | rename file from old name to new        |
+| rename "from" "to"  | rename old new   | rename file from old name to new name   |
 | retr "filename"     | retr config.json | download file                           |
 | help                | help             | get help message for commands           |
 | quit                | quit             | logout from account                     |
