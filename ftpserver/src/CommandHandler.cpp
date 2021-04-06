@@ -158,10 +158,6 @@ string CommandHandler::ls_handler()
 {
     vector<string> arg;
     arg.push_back(directory);
-    for(auto str :arg)
-    {
-        cout << str<< endl;
-    }
     return shell_command_runner("ls", arg);
 }
 
@@ -216,8 +212,10 @@ int CommandHandler::retr_handler(const std::string command, std::vector<std::str
         if(!user->get_is_admin())
             throw FileUnavailable();
     arguments[0] = directory + "/" + arguments[0];
-    // TODO: check if file is not available
-    int file_size_kb = fs::file_size(arguments[0]) / 1000;
+    std::error_code ec;
+    int file_size_kb = fs::file_size(arguments[0], ec) / 1000;
+    if (ec.value() == ENOENT)
+        throw FileUnavailable();
     if (user->get_max_download_size() < file_size_kb)
         throw MaxFileSizeExceeded();
     user->set_max_download_size(user->get_max_download_size() - file_size_kb);
@@ -243,7 +241,6 @@ bool CommandHandler::is_protected(const std::string file)
 {
     for(string _file : FtpServer::protected_files)
     {
-        cout << file << _file << endl;
         if (file == _file)
         {
             return true;
@@ -264,7 +261,6 @@ string CommandHandler::shell_command_runner(const std::string command, const std
         cmd += str + " ";
     }
     cmd = cmd + ">> " + tmpname;
-    cout << cmd << endl;
     if (std::system(cmd.c_str()) != 0)
         throw Exception();
     std::ifstream file(tmpname, std::ios::in | std::ios::binary );
