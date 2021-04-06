@@ -2,6 +2,7 @@
 
 using namespace std;
 
+Logger CommandHandler::logger = Logger();
 
 CommandHandler::CommandHandler(int data_fd) : data_fd(data_fd)
 {
@@ -22,6 +23,7 @@ string CommandHandler::run_command(string input)
     Response response;
     try
     {
+        logger.write_log_message("Command " + command + " Requested.");
         if (command == "user")
         {
             return response.get_message(user_handler(arguments[0]));
@@ -102,7 +104,6 @@ string CommandHandler::run_command(string input)
     return response.get_message(ERROR);
 }
 
-
 int CommandHandler::user_handler(std::string username)
 {
     if(is_loggedin)
@@ -125,6 +126,7 @@ int CommandHandler::pass_handler(std::string pass)
             user = found_user;
             is_loggedin = true;
         }
+        logger.write_log_message("Successfully Authenticated.", user);
         return USER_LOGGEDIN;
     }
 }
@@ -144,6 +146,7 @@ bool CommandHandler::pass_checker(std::string found_user_pass, std::string pass)
 
 string CommandHandler::pwd_handler(const std::string command, std::vector<std::string> arguments)
 {
+    logger.write_log_message("Got PWD", user);
     return directory;
 }
 
@@ -151,6 +154,7 @@ string CommandHandler::mkd_handler(const std::string command, std::vector<std::s
 {
     arguments[0] = directory + "/" + arguments[0];
     shell_command_runner("mkdir", arguments);
+    logger.write_log_message("Created Directory " + arguments[0], user);
     return arguments[0];
 }
 
@@ -158,6 +162,7 @@ string CommandHandler::ls_handler()
 {
     vector<string> arg;
     arg.push_back(directory);
+    logger.write_log_message("Got Files In Directory.", user);
     return shell_command_runner("ls", arg);
 }
 
@@ -192,6 +197,7 @@ int CommandHandler::cwd_handler(const std::string command, std::vector<std::stri
     temp.push_back(arguments[0]);
     temp.push_back(" && pwd");
     directory = shell_command_runner("cd", temp);
+    logger.write_log_message("Changed Directory To " + arguments[0], user);
     return SUC_CHANGE;
 }
 
@@ -203,6 +209,7 @@ int CommandHandler::rename_handler(const std::string command, std::vector<std::s
     arguments[0] = directory + "/" + arguments[0];
     arguments[1] = directory + "/" + arguments[1];
     shell_command_runner("mv", arguments);
+    logger.write_log_message("Renamed " + arguments[0] + " To " + arguments[1], user);
     return SUC_CHANGE;
 }
 
@@ -221,11 +228,13 @@ int CommandHandler::retr_handler(const std::string command, std::vector<std::str
     user->set_max_download_size(user->get_max_download_size() - file_size_kb);
     int file_fd = open(arguments[0].c_str(), O_RDONLY);
     sendfile(data_fd, file_fd, NULL, fs::file_size(arguments[0]));
+    logger.write_log_message("Downloaded File " + arguments[0], user);
     return SUC_DOWNLOAD;
 }
 
 int CommandHandler::quit_handler()
 {
+    logger.write_log_message("Logged Out", user);
     user = NULL;
     is_user_ready = false;
     is_loggedin = false;
@@ -249,7 +258,6 @@ bool CommandHandler::is_protected(const std::string file)
     return false;
 }
 
-  
 /// https://stackoverflow.com/a/20617844
 string CommandHandler::shell_command_runner(const std::string command, const std::vector<std::string> arguments)
 {
