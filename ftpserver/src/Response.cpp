@@ -9,6 +9,8 @@ std::string Response::get_message(int num)
         return _331;
     else if (num == BAD_SEQUENCE)
         return _503;
+    else if (num == INVALID_USERPASS)
+        return _430;
     else if (num == USER_LOGGEDIN)
         return _230;
     else if (num == ERROR)

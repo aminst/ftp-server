@@ -3,7 +3,7 @@
 using namespace std;
 
 
-CommandHandler::CommandHandler()
+CommandHandler::CommandHandler(int data_fd) : data_fd(data_fd)
 {
     user = NULL;
     found_user = NULL;
@@ -75,7 +75,11 @@ string CommandHandler::run_command(string input)
         }
 
         else if (command == "retr")
-            ;
+        {
+            if(!is_loggedin)
+                throw NeedAccountForLogin();
+            return response.get_message(retr_handler(command, arguments));
+        }
 
         else if (command == "help")
         {
@@ -154,10 +158,6 @@ string CommandHandler::ls_handler()
 {
     vector<string> arg;
     arg.push_back(directory);
-    for(auto str :arg)
-    {
-        cout << str<< endl;
-    }
     return shell_command_runner("ls", arg);
 }
 
@@ -206,6 +206,24 @@ int CommandHandler::rename_handler(const std::string command, std::vector<std::s
     return SUC_CHANGE;
 }
 
+int CommandHandler::retr_handler(const std::string command, std::vector<std::string> arguments)
+{
+    if(is_protected(arguments[0]))
+        if(!user->get_is_admin())
+            throw FileUnavailable();
+    arguments[0] = directory + "/" + arguments[0];
+    std::error_code ec;
+    int file_size_kb = fs::file_size(arguments[0], ec) / 1000;
+    if (ec.value() == ENOENT)
+        throw FileUnavailable();
+    if (user->get_max_download_size() < file_size_kb)
+        throw MaxFileSizeExceeded();
+    user->set_max_download_size(user->get_max_download_size() - file_size_kb);
+    int file_fd = open(arguments[0].c_str(), O_RDONLY);
+    sendfile(data_fd, file_fd, NULL, fs::file_size(arguments[0]));
+    return SUC_DOWNLOAD;
+}
+
 int CommandHandler::quit_handler()
 {
     user = NULL;
@@ -223,7 +241,6 @@ bool CommandHandler::is_protected(const std::string file)
 {
     for(string _file : FtpServer::protected_files)
     {
-        cout << file << _file << endl;
         if (file == _file)
         {
             return true;
@@ -244,7 +261,6 @@ string CommandHandler::shell_command_runner(const std::string command, const std
         cmd += str + " ";
     }
     cmd = cmd + ">> " + tmpname;
-    cout << cmd << endl;
     if (std::system(cmd.c_str()) != 0)
         throw Exception();
     std::ifstream file(tmpname, std::ios::in | std::ios::binary );

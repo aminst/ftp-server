@@ -1,11 +1,17 @@
 #ifndef __COMMAND_HANDLER__
 #define __COMMAND_HANDLER__
 
+#include <sys/sendfile.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <string>
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
 #include <vector>
+#include <filesystem>
+#include <fstream>
 
 #include "CommandParser.hpp"
 #include "Request.hpp"
@@ -14,13 +20,15 @@
 #include "Exception.hpp"
 #include "Response.hpp"
 
+namespace fs = std::filesystem;
 class CommandHandler
 {
 public:
-    CommandHandler();
+    CommandHandler(int data_fd);
     std::string run_command(std::string input);
     
 private:
+    int data_fd;
     User* user;
     User* found_user;
     bool is_user_ready;
@@ -36,7 +44,7 @@ private:
     std::string ls_handler();
     int cwd_handler(const std::string command, std::vector<std::string> arguments);
     int rename_handler(const std::string command, std::vector<std::string> arguments);
-    std::string retr_handler(const std::string command, std::vector<std::string> arguments); 
+    int retr_handler(const std::string command, std::vector<std::string> arguments);
     int help_handler(); 
     int quit_handler(); 
     bool is_protected(const std::string file);

@@ -29,3 +29,8 @@ int User::get_max_download_size()
 {
         return max_download_size;
 }
+
+void User::set_max_download_size(int new_max_download_size)
+{
+        max_download_size = new_max_download_size;
+}
