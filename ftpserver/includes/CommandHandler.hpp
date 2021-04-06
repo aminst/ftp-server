@@ -19,6 +19,7 @@
 #include "FtpServer.hpp"
 #include "Exception.hpp"
 #include "Response.hpp"
+#include "Logger.hpp"
 
 namespace fs = std::filesystem;
 class CommandHandler
@@ -28,6 +29,7 @@ public:
     std::string run_command(std::string input);
     
 private:
+    static Logger logger;
     int data_fd;
     User* user;
     User* found_user;
