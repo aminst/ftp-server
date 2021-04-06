@@ -25,7 +25,8 @@ class FtpServer
 public:
     FtpServer();
     void run();
-    void* handle_connection(void* fd);
+    int run_socket(int port);
+    void* handle_connection(void* command_fd, void* data_fd);
 
     static std::vector<std::string> protected_files;
 };

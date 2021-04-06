@@ -2,7 +2,7 @@ CC = g++
 BUILD_DIR = build
 SRC_DIR = src
 INCLUDE_DIR = includes
-CFLAGS = -std=c++11 -pthread -Wall -Werror -I$(INCLUDE_DIR)
+CFLAGS = -std=c++17 -pthread -Wall -Werror -I$(INCLUDE_DIR)
 
 EXECUTABLE_FILE = ftpserver.out
 
@@ -16,8 +16,12 @@ OBJECTS = \
 	$(BUILD_DIR)/User.o \
 	$(BUILD_DIR)/UserManager.o \
 	$(BUILD_DIR)/Exception.o \
-	$(BUILD_DIR)/Response.o 
+	$(BUILD_DIR)/Response.o \
+	$(BUILD_DIR)/Logger.o
 
+LoggerSensitivityList = $(SRC_DIR)/Logger.cpp \
+	$(INCLUDE_DIR)/Logger.hpp \
+	$(INCLUDE_DIR)/User.hpp
 
 UserManagerSensitivityList = $(SRC_DIR)/UserManager.cpp \
 	$(INCLUDE_DIR)/User.hpp \
@@ -36,7 +40,8 @@ CommandHandlerSensitivityList = $(SRC_DIR)/CommandHandler.cpp \
 	$(INCLUDE_DIR)/CommandParser.hpp \
 	$(INCLUDE_DIR)/Request.hpp \
 	$(INCLUDE_DIR)/Exception.hpp \
-	$(INCLUDE_DIR)/Response.hpp 
+	$(INCLUDE_DIR)/Response.hpp \
+	$(INCLUDE_DIR)/Logger.hpp
 
 RequestSensitivityList = $(SRC_DIR)/Request.cpp
 
@@ -88,6 +93,9 @@ $(BUILD_DIR)/Exception.o: $(ExceptionSensitivityList)
 
 $(BUILD_DIR)/Response.o: $(ResponseSensitivityList)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/Response.cpp -o $(BUILD_DIR)/Response.o
+
+$(BUILD_DIR)/Logger.o: $(LoggerSensitivityList)
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/Logger.cpp -o $(BUILD_DIR)/Logger.o
 
 $(EXECUTABLE_FILE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE_FILE)

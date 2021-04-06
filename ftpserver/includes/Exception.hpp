@@ -70,4 +70,15 @@ private:
     const int num = 550;
 };
 
+class MaxFileSizeExceeded: public Exception
+{
+public:
+    virtual void print_error();
+    virtual int get_num();
+
+private:
+    const std::string msg = "425: Can't open data connection.";
+    const int num = 425;
+};
+
 #endif
