@@ -32,5 +32,5 @@ void FtpClient::run()
         cout << buf << endl;
     }
 
-    close(client_fd); // does this run after Ctrl+C??? NOOOOOO
+    close(client_fd);
 }
