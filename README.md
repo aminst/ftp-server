@@ -17,7 +17,7 @@ make
 ./ftpclient.out
 ```
 ## Supported Commands
-| Command Template    | Example          | Description                             |
+| Template            | Example          | Description                             |
 | ------------------- | ---------------- | --------------------------------------- |
 | user "username"     | user Ali         | enter username for authentication       |
 | pass "password"     | pass 1234        | enter password for authentication       |
