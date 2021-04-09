@@ -1,6 +1,5 @@
-# FTP Server Implementation
-[![YourActionName Actions Status](https://github.com/aminst/ftp-server/workflows/build-ci/badge.svg)](https://github.com/aminst/ftp-server/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# FTP Server Implementation [![YourActionName Actions Status](https://github.com/aminst/ftp-server/workflows/build-ci/badge.svg)](https://github.com/aminst/ftp-server/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 ## Usage
 ### How To Compile
